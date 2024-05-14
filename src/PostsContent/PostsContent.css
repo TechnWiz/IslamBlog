@@ -1,0 +1,50 @@
+.postconent_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.postcontent_texts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.postcontent_texts h1 {
+  font-size: 48px;
+  color: #fff;
+}
+
+.postcontent_img {
+  flex: 1;
+  max-height: 350px;
+  object-fit: cover;
+}
+
+.postcontent_bottom {
+  gap: 50px;
+  margin-top: 50px;
+}
+
+.postcontent_bottom p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span {
+  color: #fff;
+}
+
+@media screen and (max-width: 1024px) {
+  .postcontent_img {
+    display: none;
+  }
+
+  .postcontent_bottom {
+    flex-direction: column-reverse;
+  }
+}
