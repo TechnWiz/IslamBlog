@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./PostsContent.css";
-import { auth, db } from "../Config/FireBaseConfig";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { db } from "../Config/FireBaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 
 const PostsContent = () => {
   const [post, setPost] = useState(null);
-  const [currentUser, setCurrentUser] = useState();
   const { postId } = useParams(); // Accessing postId from route parameters
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
-
-    // Cleanup function
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -48,10 +38,10 @@ const PostsContent = () => {
               <div className="postcontent_details">
                 <div className="post_author">
                   <img
-                    src={currentUser && currentUser.photoURL}
+                    src={post.authorDisplayAvatar}
                     alt="userphoto"
                   />
-                  <span>{currentUser && currentUser.displayName}</span>
+                  <span>{post.authorDisplayName}</span>
                 </div>
               </div>
             </div>
