@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Write.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { auth, db, storage } from "../Config/FireBaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Write = () => {
   const [postTitle, setPostTitle] = useState("");
@@ -12,8 +12,11 @@ const Write = () => {
   const [postImg, setPostImg] = useState(null);
   const [postImgUrl, setPostImgUrl] = useState("");
   const [postErr, setPostErr] = useState("");
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
+
+  const navigate = useNavigate();
 
   const types = ["image/png", "image/jpeg"];
 
@@ -38,19 +41,19 @@ const Write = () => {
 
   const addPosts = async (event) => {
     event.preventDefault();
-  
+
     // Check if user is authenticated
     if (!auth.currentUser) {
       alert("Not authenticated users are not allowed to add posts.");
       return;
     }
-  
+
     try {
       const storageRef = ref(storage, `postImages/${postImg.name}`);
       await uploadBytes(storageRef, postImg);
-  
+
       const imgUrl = await getDownloadURL(storageRef);
-  
+
       // Add post with author's displayName to the posts collection
       await addDoc(postsCollectionRef, {
         postTitle,
@@ -59,8 +62,8 @@ const Write = () => {
         authorDisplayName: auth.currentUser.displayName, // Save the displayName of the current user as authorDisplayName
         authorDisplayAvatar: auth.currentUser.photoURL, // Save the Avatar of the current user as authorDisplayAvatar
       });
-      console.log("Post added successfully");
-  
+      alert("Post added successfully");
+      navigate("/");
       setPostTitle("");
       setPostDesc("");
       setPostImgUrl("");
@@ -71,6 +74,14 @@ const Write = () => {
       setPostErr("Error adding post...Try again later");
     }
   };
+
+  useEffect(() => {
+    if (postTitle && postDesc && postImg) {
+      setIsFormComplete(true);
+    } else {
+      setIsFormComplete(false);
+    }
+  }, [postTitle, postDesc, postImg]);
 
   const editorRef = useRef();
 
@@ -135,7 +146,12 @@ const Write = () => {
                         />
                       </div>
                       <div className="text-center">
-                        <button type="submit" className="write_btn">
+                        <button
+                          type="submit"
+                          className={`write_btn ${
+                            isFormComplete ? "write_btn_active" : ""
+                          }`}
+                        >
                           Publish
                         </button>
                       </div>

@@ -9,6 +9,10 @@
   background-color: #f0d197;
 }
 
+.write_btn_active {
+  background-color: #b78a52;
+}
+
 .write_btn:hover {
   background-color: #b78a52;
   transition: 0.6s;
